@@ -6,22 +6,67 @@ from portfolio import Portfolio
 from utils import clean_text
 
 # Streamlit UI Configuration
-st.set_page_config(layout="wide", page_title="Cold Email Generator", page_icon="📧")
+st.set_page_config(layout="wide", page_title="MailSculpt", page_icon="📧")
+
+# Custom Styling for Dark Theme
+st.markdown("""
+    <style>
+        body {
+            background-color: #0F0F0F;
+            color: #EAEAEA;
+        }
+        .title {
+            text-align: center;
+            font-size: 42px;
+            font-weight: bold;
+            background: linear-gradient(to right, #A855F7, #FACC15);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #BBBBBB;
+        }
+        .stTextInput>div>div>input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid #555;
+            border-radius: 12px;
+            padding: 10px;
+            color: white;
+        }
+        .stButton>button {
+            background: linear-gradient(135deg, #9333EA, #FACC15);
+            color: white;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 12px 20px;
+            width: 100%;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 def create_streamlit_app(llm, portfolio, clean_text):
-    st.title("MailSculpt : Cold Mail Generator")
-    st.markdown("Personalized job emails made easy and effective..")
-
-    # UI: User Inputs
-    st.subheader("🔗 Enter Job Posting URL")
+    # Title & Subtitle
+    st.markdown('<h1 class="title">MailSculpt: Cold Email Generator</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">Effortlessly craft personalized job emails with AI-powered insights.</p>', unsafe_allow_html=True)
     
-    col1, col2 = st.columns([4, 1])
+    # UI: User Inputs
+    with st.container():
+        st.subheader("🔗 Enter Job Posting URL")
+        
+        col1, col2 = st.columns([5, 2])
 
-    with col1:
-        job_url = st.text_input("Enter the URL of the job posting:", placeholder="https://example.com/job-posting")
+        with col1:
+            job_url = st.text_input(
+                "Enter the job posting URL:",
+                placeholder="https://example.com/job-posting"
+            )
 
-    with col2:
-        submit_button = st.button("🚀 Generate Email", use_container_width=True)
+        with col2:
+            st.markdown("<div style='margin-top: 8px'></div>", unsafe_allow_html=True)
+            submit_button = st.button("🚀 Generate Email")
 
     st.divider()  # Visual separation
 
@@ -31,7 +76,7 @@ def create_streamlit_app(llm, portfolio, clean_text):
             st.error("❌ Please enter a valid URL (starting with http or https).")
             return
 
-        with st.spinner("Fetching job details... ⏳"):
+        with st.spinner("🔍 Fetching job details... Please wait."):
             try:
                 loader = WebBaseLoader(job_url)
                 data = clean_text(loader.load().pop().page_content)
