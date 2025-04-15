@@ -1,3 +1,16 @@
+import sys
+import os
+
+# Patch for ChromaDB's SQLite requirement
+try:
+    import pysqlite3
+    sys.modules["sqlite3"] = pysqlite3
+    os.environ["SQLITE_MODULE"] = "pysqlite3"
+except ImportError:
+    pass
+
+
+
 import streamlit as st
 from langchain_community.document_loaders import WebBaseLoader
 
